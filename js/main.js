@@ -1,9 +1,18 @@
 $(function () {
-    var static_grid = new Array()
-    var table_status = new Array()
-    var row_status = new Array()
-    var col_status = new Array()
-    for (var i = 0; i < 9; i++) {
+      var static_grid = new Array()
+      var table_status = new Array()
+      var row_status = new Array()
+      var col_status = new Array()
+      var oparation_queue = new Array()
+      var seleced_grid = null
+      var success = false
+      var is_cleared = true
+    function init_status() {
+      static_grid = new Array()
+      table_status = new Array()
+      row_status = new Array()
+      col_status = new Array()
+      for (var i = 0; i < 9; i++) {
         table_status.push(new Array())
         row_status.push(new Array())
         col_status.push(new Array())
@@ -12,8 +21,20 @@ $(function () {
             row_status[i].push(false)
             col_status[i].push(false)
         }
+      }
+      oparation_queue = new Array()
     }
-    var oparation_queue = new Array()
+    
+    function clear() {
+        var grids = $('.grid')
+        grids.css('background-color', 'inherit')
+        grids.children().text('')
+        grids.attr('chosen', false)
+        grids.attr('is_static', false)
+        seleced_grid = null
+        success = false
+    }
+
     function highlight_grid(grid) {
         grid.css('background-color', '#996600')
         grid.attr('chosen', true)
@@ -25,14 +46,22 @@ $(function () {
         console.log(grid)
         console.log('val '+val)
         grid.children().text(''+val)
+        grid.css('background-color', '#66CCCC')
     }
     function unset_grid_val(tabn, rown, coln, val) {
         var grid = get_grid(tabn, rown, coln)
         grid.children().text('')
+        grid.css('background-color', 'inherit')
     }
 
     function dishighlight_grid(grid) {
-        grid.css('background-color', 'inherit')
+        if (grid.attr('is_static') === 'false') {
+            grid.css('background-color', 'inherit')
+        } else {
+            grid.css('background-color', '#339999')
+            
+        }
+        
         grid.attr('chosen', false)
         seleced_grid = null;
     }
@@ -52,15 +81,47 @@ $(function () {
             var row = table.children().last();
             for (var k = 0; k < 3; k++) {
                 var td = (j*3+k+1);
-                 row.append('<td class="grid" col='+k+' idx='+i+j+k+' chosen="false"><span class="grid_text"><span></td>');
+                 row.append('<td class="grid" is_static="false"  col='+k+' idx='+i+j+k+' chosen="false"><span class="grid_text"><span></td>');
             }
             
         }
     }
-    var grids = $('.grid')
-    var seleced_grid = null;
-    for (var i = 0; i < grids.length; i++) {
-        $(grids[i]).click(function(){
+    
+    
+    function buinding_evet() {
+        $(window).keydown(function(event){
+           console.log(String.fromCharCode(event.which))
+           if (seleced_grid !== null) {
+               
+               console.log(seleced_grid)
+               var val = parseInt(String.fromCharCode(event.which))
+               console.log(val)
+               if (val >=1 && val <=9) {
+                   
+                   var tabn = parseInt(seleced_grid.parent().parent().attr('tabn'))
+                   var row = parseInt(seleced_grid.parent().attr('row'))
+                   var col = parseInt(seleced_grid.attr('col'))
+                   if (check(tabn, row, col, val)===true) {
+                       seleced_grid.children().text(val)
+                       seleced_grid.css('background-color', '#339999')
+                       seleced_grid.attr('is_static', true)
+                       set_status(tabn, row, col, val)
+                       static_grid.push([tabn, row, col])
+                       console.log([tabn ,row, col, val])
+                       seleced_grid.attr('chosen', false)
+                       seleced_grid = null
+                   } else {
+                       alert('有冲突！')
+                       dishighlight_grid(seleced_grid)
+                   }
+               }
+               else {
+                   alert('无效输入！')
+                   dishighlight_grid(seleced_grid)
+               }
+            }
+        })
+        $('.grid').click(function(){
             console.log('table:'+$(this).parent().parent().attr('tabn'))
             console.log('row:'+$(this).parent().attr('row'))
             console.log('col:'+$(this).attr('col'))
@@ -74,37 +135,39 @@ $(function () {
                 dishighlight_grid(grid)
             }
         })
+     
+    }
+        $('#g_button').click(function () {
+            is_cleared = false
+            unbind_evet()
+            console.log($('h3').text())
+            $('#state').text('status:calculating')
+            
+            generate(0,0,0)
+            
+            $('#state').text('status:showing the trace')
+            do_operation()
+        })
+        $('#c_button').click(function () {
+            
+             clear()
+            init_status()
+            $('#state').text('status:none')
+            if (is_cleared === false) {
+                buinding_evet()
+                is_cleared = true
+            }
+                
+            
+            
+        })
+    
+    function unbind_evet() {
+        $('.grid').unbind('click')
+        $(window).unbind('keydown')
     }
 
-    $(window).keydown(function(event){
-        console.log(String.fromCharCode(event.which))
-        if (seleced_grid !== null) {
-            console.log(seleced_grid)
-            var val = parseInt(String.fromCharCode(event.which))
-            console.log(val)
-            var tabn = parseInt(seleced_grid.parent().parent().attr('tabn'))
-            var row = parseInt(seleced_grid.parent().attr('row'))
-            var col = parseInt(seleced_grid.attr('col'))
-            if (check(tabn, row, col, val)===true) {
-                seleced_grid.children().text(val)
-                set_status(tabn, row, col, val)
-                static_grid.push([tabn, row, col])
-                console.log([tabn ,row, col, val])
-            } else {
-                alert('有冲突！')
-            }
-            dishighlight_grid(seleced_grid)
-
-        }
-    })
-    $('button').click(btnClick)
-
-
-
-
-
-    
-
+  
     function get_grid(tabn, row, col) {
         return $('[idx='+tabn+row+col+']')
     }
@@ -152,11 +215,12 @@ $(function () {
         row_status[row][val] = false 
         col_status[col][val] = false
     }
-    var success = false
-
+    
+    var count = 0
     function do_operation() {
         var list = oparation_queue.shift()
         if (list !== undefined) {
+            count = 0
             var op = list[0]
             op(list[1], list[2], list[3], list[4])
             if (op === unset_grid_val) {
@@ -165,17 +229,18 @@ $(function () {
                 setTimeout(do_operation, 50)
             }
             
+        } else {
+            count ++
+            if (count > 100) return;
+            setTimeout(do_operation, 10)
+            $('#status').text('status:none')
         }
         console.log('doing')
         
     }
 
     
-    function btnClick() {
-        generate(0, 0, 0)
-        do_operation()
-
-    }
+    
     function find_next(tabn, rown, coln) {
         var tab = tabn
         var row = rown
@@ -204,6 +269,7 @@ $(function () {
                 if (check(tabn, rown, coln, val) === true) {
                     set_status(tabn, rown, coln, val)
                     oparation_queue.push([set_grid_val, tabn, rown, coln, val])
+                    //set_grid_val(tabn, rown, coln, val)
                     var next = find_next(tabn, rown, coln)
                     var tab = next[0]
                     var row = next[1]
@@ -216,12 +282,12 @@ $(function () {
                     if (success) return
                     unset_status(tabn, rown, coln, val)
                     oparation_queue.push([unset_grid_val, tabn, rown, coln, val])
+                   // unset_grid_val(tabn, rown, coln, val)
                 }
             }
         }
     }
-    
-
+    init_status()
+    buinding_evet()
 })
 
-   

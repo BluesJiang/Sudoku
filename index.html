@@ -4,15 +4,27 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <script src="js/jquery-3.1.1.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/test.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/main.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" href="css/table.css" type="text/css" charset="utf-8">
     <title></title>
   </head>
   <body>
         <h1 id="header">Sudoku</h1>
+        <div id="ctl_button">
+          <span class="ctl_button" id="g_button" >生成</span>
+          <span class="ctl_button" id="c_button">清除</span>
+        </div>
+        <h3 style="text-align: center" id="state">status:none</h3>
         <table class="main_table">
-            
+          
         </table>
-        <button >生成</button>
+        <h3>说明：</h3>
+          <ul>
+              <li>选中格子后再按数字键填数字</li>
+              <li>多解的只显示一种解的情况</li>
+              <li>点按生成以后可能会有卡顿，请耐心等待</li>
+          </ul>
+        
+        
   </body>
 </html>

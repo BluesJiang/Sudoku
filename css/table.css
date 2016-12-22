@@ -17,6 +17,20 @@
     font-weight: bold;
 }
 
+#ctl_button {
+    margin-left: auto;
+    margin-right: auto;
+    height:50px;
+    display: table;
+    
+}
+.ctl_button {
+    font-size: 20px;
+    margin: 0px 3px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    background-color: #3399CC;
+}
 td.grid {
     border: 1px solid grey;
     text-align: center;
@@ -30,5 +44,5 @@ td.large_table  {
     padding: 0px;
     /*border-width: 1px;*/
     border: 1px solid grey;
-    background-color: #CCC000;
+    background-color: #CCFFCC;
 }
