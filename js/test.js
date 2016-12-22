@@ -14,10 +14,6 @@ $(function () {
         }
     }
     var oparation_queue = new Array()
-
-
-    
-
     function highlight_grid(grid) {
         grid.css('background-color', '#996600')
         grid.attr('chosen', true)
@@ -178,6 +174,7 @@ $(function () {
     function btnClick() {
         generate(0, 0, 0)
         do_operation()
+
     }
     function find_next(tabn, rown, coln) {
         var tab = tabn
