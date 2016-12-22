@@ -13,7 +13,10 @@ $(function () {
             col_status[i].push(false)
         }
     }
+    var oparation_queue = new Array()
 
+
+    
 
     function highlight_grid(grid) {
         grid.css('background-color', '#996600')
@@ -28,14 +31,6 @@ $(function () {
         grid.children().text(''+val)
     }
     function unset_grid_val(tabn, rown, coln, val) {
-        for (var i = 0; i < static_grid.length; i++) {
-            if (static_grid[i][0] === tabn &&
-                static_grid[i][1] === rown &&
-                static_grid[i][2] === coln &&
-                static_grid[i][3] === val) {
-                    return
-            }
-        }
         var grid = get_grid(tabn, rown, coln)
         grid.children().text('')
     }
@@ -162,9 +157,27 @@ $(function () {
         col_status[col][val] = false
     }
     var success = false
+
+    function do_operation() {
+        var list = oparation_queue.shift()
+        if (list !== undefined) {
+            var op = list[0]
+            op(list[1], list[2], list[3], list[4])
+            if (op === unset_grid_val) {
+                setTimeout(do_operation, 10)
+            } else {
+                setTimeout(do_operation, 50)
+            }
+            
+        }
+        console.log('doing')
+        
+    }
+
     
     function btnClick() {
         generate(0, 0, 0)
+        do_operation()
     }
     function find_next(tabn, rown, coln) {
         var tab = tabn
@@ -193,7 +206,7 @@ $(function () {
             for (var val = 1; val <= 9; val++) {
                 if (check(tabn, rown, coln, val) === true) {
                     set_status(tabn, rown, coln, val)
-                    set_grid_val(tabn, rown, coln, val)
+                    oparation_queue.push([set_grid_val, tabn, rown, coln, val])
                     var next = find_next(tabn, rown, coln)
                     var tab = next[0]
                     var row = next[1]
@@ -205,7 +218,7 @@ $(function () {
                     generate(tab, row, col)
                     if (success) return
                     unset_status(tabn, rown, coln, val)
-                    unset_grid_val(tabn, rown, coln, val)
+                    oparation_queue.push([unset_grid_val, tabn, rown, coln, val])
                 }
             }
         }
