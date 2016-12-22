@@ -202,10 +202,7 @@ $(function () {
                         success = true
                         return
                     }
-                    setTimeout(function() {
-                       generate(tab, row, col) 
-                    }.bind(this), 10);
-                    
+                    generate(tab, row, col)
                     if (success) return
                     unset_status(tabn, rown, coln, val)
                     unset_grid_val(tabn, rown, coln, val)
