@@ -1,0 +1,34 @@
+#header {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+.grid_table {
+      border-spacing: 0;
+}
+.main_table {
+    border-spacing: 0;
+    margin-left: auto;
+    margin-right: auto;
+    border: 2px solid grey;
+}
+.grid_text {
+    color: #996600;
+    font-weight: bold;
+}
+
+td.grid {
+    border: 1px solid grey;
+    text-align: center;
+    margin: 0px;
+    font-size: 30px;
+    width: 50px;
+    height: 50px;
+}
+
+td.large_table  {
+    padding: 0px;
+    /*border-width: 1px;*/
+    border: 1px solid grey;
+    background-color: #CCC000;
+}
