@@ -46,3 +46,33 @@ td.large_table  {
     border: 1px solid grey;
     background-color: #CCFFCC;
 }
+
+
+#floating_panel {
+    position: absolute;
+    background: #CCFF99;
+    display: table;
+    border-radius: 10px;
+    border-color: #CCCCCC;
+    border-width: 2px;
+    /*border-spacing: 10px;*/
+}
+
+.panel_row {
+
+    height: 32px;
+    margin-top: 15px;
+    
+}
+
+.panel_grid {
+    margin: 5px;
+    padding: 10px;
+    background: #FFCC99;
+    border-radius: 8px;
+}
+div.dif {
+    margin-left: auto;
+    margin-right: auto;
+    width: 180px;
+}
